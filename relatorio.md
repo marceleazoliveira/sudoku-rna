@@ -1,241 +1,319 @@
-# Resolução de Sudoku com Rede Neural Artificial Multicamadas
+# Relatório – Resolução de Sudoku NxN com Rede Neural Artificial Multicamadas
 
-## 1. Introdução
+## Disciplina
 
-Este trabalho propõe uma solução baseada em Rede Neural Artificial (RNA) multicamadas para auxiliar na resolução e validação do quebra-cabeça Sudoku. Inicialmente, o problema foi tratado em uma grade 4x4, com subgrupos 2x2 e símbolos pertencentes ao conjunto S = {1, 2, 3, 4}. Em seguida, a abordagem foi generalizada para grades NxN, como o caso 9x9.
+Inteligência Artificial
 
-O objetivo principal foi demonstrar como uma RNA pode aprender a reconhecer padrões de validade em tabuleiros de Sudoku, enquanto a geração da solução final é garantida por regras explícitas do problema e por um algoritmo de busca com restrições.
+## Professor
 
-## 2. Regras do Sudoku
+Edjard Mota
 
-O Sudoku é um problema de satisfação de restrições. Para que um tabuleiro seja considerado válido, ele deve atender às seguintes condições:
+## Integrantes
 
-1. Cada célula deve conter apenas um número pertencente ao conjunto permitido.
-2. Nenhuma linha pode conter números repetidos.
-3. Nenhuma coluna pode conter números repetidos.
-4. Nenhum subgrupo pode conter números repetidos.
-5. A solução final deve preencher todas as células respeitando as restrições anteriores.
+- Gabriel Yuri Cavalcante de Castro – 22350996
+- Marcele Azevedo de Paula Oliveira – 22353160
 
-No caso do Sudoku 4x4, a grade possui 16 células e subgrupos 2x2. Já no Sudoku 9x9, a grade possui 81 células e subgrupos 3x3.
+## Universidade
 
-## 3. Organização do Projeto
+Universidade Federal do Amazonas (UFAM)
 
-O projeto foi organizado com dois códigos principais:
+---
+
+# 1. Introdução
+
+A Inteligência Artificial (IA) possui como um de seus objetivos o desenvolvimento de sistemas capazes de aprender, raciocinar e tomar decisões em problemas complexos. Entre os diversos problemas estudados na área, o Sudoku destaca-se por exigir simultaneamente aprendizado, busca e satisfação de restrições.
+
+O Sudoku é tradicionalmente conhecido como um jogo de lógica, porém pode ser formalizado como um Problema de Satisfação de Restrições (Constraint Satisfaction Problem – CSP). Nesse contexto, cada célula da grade representa uma variável que deve assumir um valor válido sem violar as restrições impostas pelas linhas, colunas e blocos.
+
+O objetivo deste trabalho foi desenvolver uma solução baseada em Redes Neurais Artificiais Multicamadas (MLP) capaz de resolver instâncias de Sudoku de diferentes dimensões. A implementação foi construída de forma genérica para suportar grades 4x4, 9x9 e 16x16, demonstrando a possibilidade de generalização da abordagem para diferentes tamanhos de problema.
+
+Além do aprendizado realizado pela rede neural, foi incorporado um mecanismo de validação simbólica baseado nas regras do Sudoku. Dessa forma, a solução combina aprendizado estatístico com raciocínio lógico, aproximando-se dos conceitos modernos de IA neurossimbólica.
+
+---
+
+# 2. Fundamentação Teórica
+
+## 2.1 Sudoku como Problema de Satisfação de Restrições
+
+O Sudoku pode ser representado como um CSP, no qual:
+
+- As variáveis correspondem às células da grade.
+- O domínio de cada variável corresponde aos valores possíveis.
+- As restrições determinam quais combinações são válidas.
+
+Uma solução válida deve satisfazer simultaneamente:
+
+- Cada célula contém exatamente um valor.
+- Não há repetição em linhas.
+- Não há repetição em colunas.
+- Não há repetição dentro dos blocos.
+
+Portanto, resolver um Sudoku significa encontrar uma atribuição de valores capaz de satisfazer todas essas restrições ao mesmo tempo.
+
+---
+
+## 2.2 Sudoku e Raciocínio Lógico
+
+Embora possa ser tratado como um problema de preenchimento de padrões, o Sudoku exige raciocínio baseado em restrições.
+
+Para determinar corretamente o valor de uma única célula é necessário considerar simultaneamente:
+
+- os valores já presentes na linha;
+- os valores presentes na coluna;
+- os valores presentes no bloco correspondente.
+
+Essa característica faz com que o Sudoku seja frequentemente utilizado em pesquisas relacionadas à representação de conhecimento, lógica proposicional, SAT (Satisfatibilidade Booleana) e sistemas de inferência.
+
+---
+
+## 2.3 Redes Neurais Artificiais Multicamadas
+
+As Redes Neurais Artificiais Multicamadas (MLP – Multilayer Perceptron) são modelos de aprendizado supervisionado compostos por:
+
+- camada de entrada;
+- camadas ocultas;
+- camada de saída.
+
+Durante o treinamento, os pesos da rede são ajustados utilizando retropropagação do erro (backpropagation), permitindo que a rede aprenda padrões presentes nos dados.
+
+Neste trabalho, a RNA foi treinada para aprender a relação entre um tabuleiro incompleto e sua respectiva solução completa.
+
+---
+
+## 2.4 IA Neurosimbólica
+
+Uma limitação importante das redes neurais é que elas aprendem padrões estatísticos, mas não possuem conhecimento explícito das regras do domínio.
+
+No Sudoku, isso significa que uma RNA pode prever números repetidos em uma linha ou coluna mesmo quando tais valores são proibidos pelas regras do problema.
+
+Para superar essa limitação, foi utilizada uma abordagem híbrida, combinando:
+
+- aprendizado neural;
+- validação simbólica;
+- backtracking.
+
+Essa integração caracteriza uma abordagem neurossimbólica, na qual métodos estatísticos e simbólicos trabalham de forma complementar.
+
+---
+
+# 3. Representação do Problema
+
+A implementação foi desenvolvida de forma genérica para suportar Sudoku NxN.
+
+Os experimentos contemplam:
+
+| Dimensão | Bloco |
+|-----------|---------|
+| 4x4 | 2x2 |
+| 9x9 | 3x3 |
+| 16x16 | 4x4 |
+
+O tamanho do bloco é calculado automaticamente pela raiz quadrada da dimensão da grade.
+
+Cada célula pode assumir valores pertencentes ao conjunto:
+
+S = {1, 2, ..., N}
+
+onde N representa a dimensão do Sudoku.
+
+As células vazias são representadas pelo valor 0.
+
+Para alimentar a RNA, foi utilizada codificação One-Hot Encoding.
+
+Assim, cada célula pode assumir:
+
+- estado vazio;
+- valor 1;
+- valor 2;
+- ...
+- valor N.
+
+Consequentemente, cada posição da grade é representada por N+1 atributos.
+
+---
+
+# 4. Geração dos Dados
+
+O conjunto de treinamento foi gerado artificialmente.
+
+Inicialmente são construídas grades completas válidas de Sudoku. Posteriormente, algumas posições são removidas aleatoriamente para produzir tabuleiros incompletos.
+
+Cada amostra possui:
+
+### Entrada
+
+Tabuleiro incompleto.
+
+### Saída
+
+Tabuleiro completo correspondente.
+
+Essa estratégia garante que todas as soluções utilizadas durante o treinamento sejam válidas.
+
+Além disso, a remoção aleatória das pistas produz diferentes níveis de dificuldade e aumenta a diversidade dos exemplos.
+
+---
+
+# 5. Arquitetura da Rede Neural
+
+A arquitetura implementada é composta por:
 
 ```text
-sudoku-rna/
-├── README.md
-├── relatorio.md
-├── requirements.txt
-├── src/
-│   ├── sudoku4_rna.py
-│   └── sudoku_n_rna.py
-└── imagens/
-    ├── imagens4x4/
-    └── imagensNxN/
+Camada de Entrada
+↓
+Camada Oculta 1 (ReLU)
+↓
+Camada Oculta 2 (ReLU)
+↓
+Camada Oculta 3 (ReLU)
+↓
+Camada de Saída
 ```
 
-O arquivo `sudoku4_rna.py` contém a implementação inicial para o Sudoku 4x4. Esse código foi usado como base para demonstrar o funcionamento completo da RNA em um problema menor, onde é possível gerar todas as soluções válidas.
+O número de neurônios da entrada e saída é calculado automaticamente de acordo com o tamanho da grade.
 
-O arquivo `sudoku_n_rna.py` contém a versão generalizada para grades NxN. Essa versão permite testar grades maiores, como 9x9, mas apresenta limitações práticas devido ao crescimento do espaço de busca e da quantidade de combinações possíveis.
+Dessa forma, a mesma implementação pode ser utilizada para Sudoku 4x4, 9x9 ou 16x16.
 
-A pasta `imagens/` armazena os tabuleiros iniciais e resolvidos gerados durante a execução dos códigos. Essas imagens são utilizadas no relatório para demonstrar visualmente os resultados obtidos.
+A função de perda utilizada foi Cross Entropy Loss, adequada para problemas de classificação multiclasse.
 
-## 4. Implementação para Sudoku 4x4
+O treinamento foi realizado utilizando o algoritmo Adam.
 
-A primeira implementação foi feita para uma grade 4x4 com subgrupos 2x2. Nesse caso, o conjunto de símbolos utilizado foi:
+---
 
-```text
-S = {1, 2, 3, 4}
-```
+# 6. Funcionamento da Solução
 
-A RNA foi treinada para reconhecer se um tabuleiro completo é válido ou inválido. Para isso, foram geradas todas as soluções completas válidas do Sudoku 4x4.
+A solução desenvolvida é executada em quatro etapas principais.
 
-A entrada da rede representa o tabuleiro codificado numericamente, e a saída indica a probabilidade de o tabuleiro ser válido.
+### Etapa 1 – Geração dos Dados
 
-Além da RNA, foi utilizado um algoritmo de busca com restrições para preencher tabuleiros incompletos. Assim, a RNA atua como uma ferramenta de reconhecimento, enquanto a validade final da solução é garantida pelas regras formais do Sudoku.
+São produzidos tabuleiros válidos de Sudoku e versões incompletas desses tabuleiros.
 
-## 5. Conjunto de Dados
+### Etapa 2 – Treinamento
 
-Para o Sudoku 4x4, foram geradas 288 soluções completas válidas. A partir dessas soluções, foram criadas amostras positivas e negativas para treinamento e teste.
+A RNA recebe tabuleiros incompletos como entrada e aprende a prever as soluções completas.
 
-As amostras positivas correspondem a tabuleiros válidos, enquanto as amostras negativas são geradas a partir de alterações nos tabuleiros, criando violações nas regras de linha, coluna ou subgrupo.
+### Etapa 3 – Predição
 
-Exemplo de resultado obtido:
+Após o treinamento, a rede gera uma solução para um novo tabuleiro.
 
-```text
-Soluções completas válidas 4x4 geradas: 288
-Amostras de treino: 1843
-Amostras de teste : 461
+### Etapa 4 – Validação Simbólica
 
-Acurácia treino: 1.0000
-Acurácia teste : 0.9978
-```
+A solução produzida é analisada por um mecanismo simbólico responsável por verificar o cumprimento das regras do Sudoku.
 
-Esses resultados indicam que, para o caso 4x4, a RNA conseguiu aprender muito bem os padrões de validade do Sudoku.
+Quando necessário, um algoritmo de backtracking guiado pelas probabilidades produzidas pela RNA corrige a solução.
 
-## 6. Exemplo de Execução 4x4
+---
 
-Um exemplo de tabuleiro inicial gerado aleatoriamente é apresentado abaixo:
+# 7. Validação Simbólica
 
-```text
-[[2 0 1 0]
- [1 3 2 0]
- [3 0 0 0]
- [0 0 3 2]]
-```
+A validação simbólica verifica:
 
-Nesse tabuleiro, o valor 0 representa uma célula vazia.
+- linhas;
+- colunas;
+- blocos.
 
-A solução final encontrada foi:
+Uma solução somente é considerada válida quando:
 
-```text
-[[2 4 1 3]
- [1 3 2 4]
- [3 2 4 1]
- [4 1 3 2]]
-```
+- todas as linhas contêm os valores permitidos sem repetição;
+- todas as colunas contêm os valores permitidos sem repetição;
+- todos os blocos contêm os valores permitidos sem repetição.
 
-A solução foi considerada válida pelas regras do Sudoku e também foi reconhecida pela RNA com alta probabilidade.
+Essa etapa garante consistência lógica ao resultado final.
 
-## 7. Generalização para Sudoku NxN
+---
 
-Após a implementação do Sudoku 4x4, o código foi generalizado para trabalhar com grades NxN. A principal mudança foi substituir os valores fixos da grade por uma configuração variável.
+# 8. Resultados Experimentais
 
-Na versão 4x4, o código trabalhava com valores fixos como:
+Os testes demonstraram que a RNA é capaz de aprender padrões de preenchimento em diferentes tamanhos de Sudoku.
 
-```python
-N = 4
-BOX = 2
-S = [1, 2, 3, 4]
-```
+Durante o treinamento observou-se:
 
-Na versão generalizada, esses valores passaram a depender do tamanho escolhido para a grade. Assim, o programa pode ser executado, por exemplo, com:
+- redução progressiva da função de perda;
+- aumento da acurácia;
+- melhoria da qualidade das previsões.
 
-```bash
-python sudoku_n_rna.py --n 4
-```
+Em diversos casos a rede produziu soluções próximas da resposta correta. Entretanto, algumas previsões ainda apresentaram violações das regras do Sudoku.
 
-ou:
+Nesses casos, o mecanismo de validação simbólica e o backtracking foram responsáveis por produzir uma solução final válida.
 
-```bash
-python sudoku_n_rna.py --n 9 --solucoes 200 --epocas 80 --vazios 20
-```
+---
 
-Para uma grade 9x9, os subgrupos são 3x3. Para uma grade 16x16, os subgrupos seriam 4x4.
+# 9. Dificuldade de Geração de Amostras
 
-## 8. Mudanças Necessárias na Generalização
+Um dos principais desafios do problema está relacionado à explosão combinatória.
 
-A generalização do Sudoku 4x4 para NxN exigiu várias alterações importantes:
+À medida que o tamanho do Sudoku aumenta:
 
-### 8.1 Tamanho da Grade
+- cresce o número de células;
+- cresce o número de combinações possíveis;
+- cresce o espaço de busca.
 
-O código deixou de depender de uma grade fixa 4x4 e passou a utilizar uma variável `N`, representando o tamanho da grade.
+Consequentemente, torna-se cada vez mais difícil gerar exemplos suficientes para representar adequadamente todas as possibilidades do problema.
 
-### 8.2 Tamanho dos Subgrupos
+Esse crescimento evidencia que o Sudoku não pode ser tratado apenas como uma tarefa de classificação, mas também como um problema de raciocínio e satisfação de restrições.
 
-No Sudoku 4x4, os subgrupos são 2x2. No Sudoku 9x9, são 3x3. Na generalização inicial, foi usada a relação:
+---
 
-```text
-subgrupo = √N x √N
-```
+# 10. Generalização para Sudoku NxN
 
-Essa abordagem funciona para grades como:
+Uma das principais contribuições da implementação desenvolvida foi sua capacidade de generalização.
 
-```text
-4x4  -> 2x2
-9x9  -> 3x3
-16x16 -> 4x4
-```
+O sistema foi projetado para adaptar automaticamente:
 
+- tamanho da grade;
+- tamanho dos blocos;
+- quantidade de símbolos;
+- dimensões da entrada;
+- dimensões da saída.
 
+Assim, o mesmo código pode ser utilizado para Sudoku 4x4, 9x9 e 16x16.
 
-### 8.3 Codificação da Entrada da RNA
+Entretanto, o aumento da dimensão provoca crescimento significativo do custo computacional, especialmente durante a etapa de busca simbólica.
 
-Com o aumento da grade, a entrada da RNA também cresce. No 4x4, existem apenas 16 células. No 9x9, existem 81 células. No 16x16, existem 256 células.
+---
 
-Isso torna a rede mais difícil de treinar e exige mais dados.
+# 11. Relação com os Conteúdos da Disciplina
 
-### 8.4 Geração do Conjunto de Dados
+Este projeto envolve diversos conceitos estudados ao longo da disciplina:
 
-No Sudoku 4x4, foi possível gerar todas as 288 soluções válidas. Porém, para o Sudoku 9x9, o número de soluções possíveis é extremamente grande. Dessa forma, não é viável enumerar todas as soluções.
+- Representação de Conhecimento;
+- Lógica Proposicional;
+- SAT;
+- CSP;
+- Heurísticas para Sudoku;
+- Redes Neurais Artificiais;
+- Aprendizado Supervisionado;
+- IA Neurosimbólica.
 
-Na versão NxN, foi necessário usar amostragem, isto é, gerar apenas uma quantidade limitada de soluções válidas para formar o conjunto de treinamento.
+O trabalho demonstra que problemas de raciocínio continuam exigindo mecanismos simbólicos mesmo quando técnicas modernas de aprendizado de máquina são utilizadas.
 
-### 8.5 Tempo de Execução
+---
 
-Quanto maior a grade, maior o tempo necessário para gerar soluções, criar amostras, treinar a RNA e resolver os tabuleiros incompletos.
+# 12. Participação da Equipe
 
-Por isso, no caso 9x9, foram usados parâmetros menores, como:
+O trabalho foi desenvolvido em equipe, contemplando:
 
-```bash
-python sudoku_n_rna.py --n 9 --solucoes 200 --epocas 80 --vazios 20
-```
+- estudo dos materiais da disciplina;
+- implementação da solução;
+- realização dos experimentos;
+- análise dos resultados;
+- elaboração da documentação.
 
-## 9. Resultados Obtidos para 9x9
+Equipe:
 
-Na execução com Sudoku 9x9, foram usadas 200 soluções completas como base para geração do conjunto de dados.
+- Gabriel Yuri Cavalcante de Castro – 22350996
+- Marcele Azevedo de Paula Oliveira – 22353160
 
-Resultado obtido:
+---
 
-```text
-Tamanho da grade: 9x9
-Subgrupos: 3x3
-Soluções completas usadas como base: 200
-Amostras de treino: 960
-Amostras de teste : 240
+# 13. Conclusão
 
-Acurácia treino: 0.9010
-Acurácia teste : 0.3125
-```
+Os resultados obtidos demonstraram que Redes Neurais Artificiais Multicamadas podem aprender padrões de preenchimento em Sudoku e produzir soluções consistentes para diferentes tamanhos de grade.
 
-Apesar de a RNA ter alcançado 90,10% de acurácia no treinamento, sua acurácia no teste foi de apenas 31,25%. Isso indica que a rede não conseguiu generalizar bem para novos exemplos.
+Entretanto, verificou-se que a RNA, isoladamente, não garante o cumprimento de todas as restrições do problema.
 
-Esse comportamento caracteriza um possível overfitting, pois a RNA aprendeu padrões específicos do conjunto de treino, mas não conseguiu reconhecer adequadamente tabuleiros diferentes no conjunto de teste.
+Por esse motivo, a utilização conjunta de validação simbólica e backtracking mostrou-se fundamental para garantir a correção lógica das soluções.
 
-Mesmo assim, as soluções finais foram consideradas válidas pelas regras do Sudoku, pois o resolvedor utiliza busca com restrições.
+A integração entre aprendizado estatístico e raciocínio simbólico permitiu construir uma solução mais robusta, evidenciando na prática os conceitos de IA neurossimbólica estudados na disciplina.
 
-## 10. Discussão Sobre as Dificuldades da Generalização
-
-A principal dificuldade da generalização para NxN está no crescimento combinatório do problema. No Sudoku 4x4, o espaço de busca já é grande, mas ainda controlável. No Sudoku 9x9, a quantidade de combinações possíveis cresce drasticamente.
-
-Se o problema fosse resolvido apenas por geração aleatória de tabuleiros e teste de validade, a abordagem seria ineficiente. Isso ocorre porque a maioria das combinações possíveis não satisfaz as regras do Sudoku.
-
-Por exemplo, para uma grade NxN, o número bruto de combinações possíveis é:
-
-```text
-N^(N*N)
-```
-
-No caso 4x4:
-
-```text
-4^16 = 4.294.967.296 combinações possíveis
-```
-
-Mesmo assim, apenas 288 correspondem a soluções válidas completas.
-
-Isso mostra que o Sudoku não deve ser tratado apenas como um problema de tentativa e erro, mas sim como um problema de raciocínio baseado em restrições.
-
-A RNA consegue aprender padrões a partir dos dados, mas não garante sozinha que todas as regras do Sudoku serão respeitadas. Por isso, a solução proposta combina RNA com regras explícitas e busca.
-
-## 11. Limitações da Abordagem
-
-A solução apresenta algumas limitações:
-
-1. A RNA reconhece padrões de validade, mas não é responsável sozinha por resolver o Sudoku.
-2. Para grades maiores, como 9x9 e 16x16, a geração de dados se torna mais difícil.
-3. A rede pode sofrer overfitting quando o conjunto de treinamento é pequeno.
-4. A versão NxN inicial suporta melhor grades com subgrupos quadrados, como 4x4, 9x9 e 16x16.
-5. Para grades como 6x6 e 8x8, seria necessário adaptar o código para aceitar subgrupos retangulares.
-6. Quanto maior a grade, maior a entrada da RNA e maior a necessidade de dados.
-
-
-
-## 12. Conclusão
-
-O trabalho demonstrou que uma RNA multicamadas pode ser usada para reconhecer padrões de validade em tabuleiros de Sudoku, especialmente no caso 4x4. Nesse cenário, a rede apresentou alta acurácia tanto no treinamento quanto no teste.
-
-A generalização para NxN mostrou que o aumento do tamanho da grade torna o problema significativamente mais difícil. No caso 9x9, a RNA apresentou dificuldade de generalização, evidenciada pela diferença entre a acurácia de treino e a acurácia de teste.
-
-Assim, conclui-se que a RNA pode ser utilizada como uma ferramenta auxiliar, mas a garantia de validade da solução depende das regras formais do Sudoku e do algoritmo de busca com restrições. Essa combinação permite resolver os tabuleiros gerados e, ao mesmo tempo, discutir as limitações da aplicação de redes neurais em problemas de raciocínio lógico.
+Por fim, a generalização da implementação para Sudoku 4x4, 9x9 e 16x16 demonstrou a flexibilidade da abordagem proposta e reforçou a importância da combinação entre aprendizado de máquina e representação simbólica na resolução de problemas complexos de Inteligência Artificial.
