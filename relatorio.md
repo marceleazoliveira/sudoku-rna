@@ -31,7 +31,6 @@ sudoku-rna/
 ├── imagens/
 │   ├── 4x4/
 │   └── nxn/
-├── requirements.txt
 └── relatorio.md
 ```
 
