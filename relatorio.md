@@ -98,14 +98,6 @@ A solução final encontrada foi:
 
 A solução foi considerada válida pelas regras do Sudoku e também foi reconhecida pela RNA com alta probabilidade.
 
-Exemplo de imagem gerada:
-
-```markdown
-![Tabuleiro inicial 4x4](imagens/4x4/sudoku_inicial_1.png)
-
-![Tabuleiro resolvido 4x4](imagens/4x4/sudoku_resolvido_1.png)
-```
-
 ## 7. Generalização para Sudoku NxN
 
 Após a implementação do Sudoku 4x4, o código foi generalizado para trabalhar com grades NxN. A principal mudança foi substituir os valores fixos da grade por uma configuração variável.
