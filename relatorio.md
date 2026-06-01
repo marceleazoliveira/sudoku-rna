@@ -24,14 +24,15 @@ O projeto foi organizado com dois códigos principais:
 
 ```text
 sudoku-rna/
-├── codigo_4x4/
-│   └── sudoku4_rna.py
-├── codigo_nxn/
+├── README.md
+├── relatorio.md
+├── requirements.txt
+├── src/
+│   ├── sudoku4_rna.py
 │   └── sudoku_n_rna.py
-├── imagens/
-│   ├── 4x4/
-│   └── nxn/
-└── relatorio.md
+└── imagens/
+    ├── imagens4x4/
+    └── imagensNxN/
 ```
 
 O arquivo `sudoku4_rna.py` contém a implementação inicial para o Sudoku 4x4. Esse código foi usado como base para demonstrar o funcionamento completo da RNA em um problema menor, onde é possível gerar todas as soluções válidas.
